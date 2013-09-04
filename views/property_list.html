@@ -1,0 +1,23 @@
+<style>
+    ul.properties {
+        max-width: 300px;
+    }
+    ul.properties li {
+        clear: both;
+    }
+    ul.properties li button.remove {
+        float: right;
+    }
+</style>
+<ul class="properties">
+    {% for property in properties %}
+        <li>
+            <form method="POST" action="/property/{{property._id}}">
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="submit" class="remove">x</button>
+            </form>
+            <a href="/property/{{property._id}}">{{ property.name }}</a><br/>
+            {{ property.description }}
+        </li>
+    {% endfor %}
+</ul>

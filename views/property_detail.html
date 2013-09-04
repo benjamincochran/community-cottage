@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Details for "{{ property.name }}"{% endblock %}
+
+{% block content %}
+    <h2>{{ property.name }}</h2>
+    {% if property.description != "" %}<h4>{{ property.description }}</h4>{% endif %}
+    <div class="address">
+        {% for field in ['streetAddress', 'city', 'state', 'zip', 'country'] %}
+            <div class="{{ field }}">{{ property.address[field] }}</div>
+        {% endfor %}
+    </div>
+    <ul class="cottages">
+        {% for cottage in cottages %}
+            <li>
+                {{ cottage.name }}<br/>
+                Floors: {{ cottage.floors }}
+                Rooms: {{ cottage.rooms.size }}
+                <ul class="rooms">
+                    {% for room in cottage.rooms %}
+                        <li>{{ room.name }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+            

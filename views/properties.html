@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block title %}Properties I Administer{% endblock %}
+
+{% block head %}
+    <style>
+        form.add input, form.add textarea {
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    {% include "property_list.html" %}
+
+    <form action="/property" method="POST" class="add">
+        <h2>Add Property</h2>
+        <input type="hidden" name="community" value="Test" required="true"/>
+        <input type="text" name="name" placeholder="Name"/>
+        <textarea name="description"></textarea>
+        <fieldset>
+            <legend>Address</legend>
+            <input type="text" name="streetAddress" placeholder="Street Address" required="true"/>
+            <input type="text" name="city" placeholder="City" required="true"/>
+            <input type="text" name="state" placeholder="State" required="true"/>
+            <input type="text" name="zip" placeholder="ZIP/Postal Code" required="true"/>
+            <select name="country">
+                <option>US</option>
+                <option>Canada</option>
+            </select>
+        </fieldset>
+        <button type="submit">Add</button>
+    </form>
+
+{% endblock %}
