@@ -1,30 +1,35 @@
-var mongoose = require('mongoose'),
+var mongoose = require("../routes/db").mongoose,
     Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
-mongoose.connect('mongodb://localhost/properties');
-
 var BedSchema = new Schema({
-    id: ObjectId,
     capacity: {type: Number, required: true, enum: [1, 2]}
 });
 
 var RoomSchema = new Schema({
-    id: ObjectId,
     name: {type: String, required: true},
     beds: [BedSchema],
     floor: {type: Number, required: true, default: 1}
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
+var RoomModel = mongoose.model('Room', RoomSchema);
 
 var CottageSchema = new Schema({
-    id: ObjectId,
     name: {type: String, required: true},
     rooms: [RoomSchema],
-    floors: {type: Number, required: true, default: 1}
+    floors: {type: Number, required: true, default: 1, min: 1}
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
+CottageSchema.virtual("floorArray").get(function() {
+    return new Array(this.get('floors'));
+});
+var CottageModel = mongoose.model('Cottage', CottageSchema);
 
 var PropertySchema = new Schema({
-    id: ObjectId,
     name: {type: String, required: false, trim: true},
     description: {type: String, required: false, trim: true},
     admins: [Number],
@@ -34,11 +39,14 @@ var PropertySchema = new Schema({
         city: {type: String, required: true},
         state: {type: String, required: true},
         zip: {type: String, required: true},
-        country: {type: String, required: true, enum: ['US', 'Canada']}
+        country: {type: String, required: true, enum: ['US', 'Canada']},
+        phone: {type: String, required: false}
     },
     community: {type: String, required: true}
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
-
 var PropertyModel = mongoose.model('Property', PropertySchema);
 
 module.exports = {
@@ -52,7 +60,7 @@ module.exports = {
         }, callback);
     },
     listProperties: function(community, adminId, callback) {
-        PropertyModel.find({community: community, admins: adminId}, callback);
+        PropertyModel.find({community: community, admins: adminId}, 'name description address', callback);
     },
     model: PropertyModel
 };
